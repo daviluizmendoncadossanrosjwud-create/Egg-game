@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Egg Farm Transcendent+</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0c1020;color:white;font-family:Arial,sans-serif;padding:15px}
+header{background:linear-gradient(120deg,#472078,#151c40);padding:18px;border-radius:16px;margin-bottom:12px}
+h1{margin:0;font-size:23px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stat,.panel{background:#191f35;border:1px solid #343d5e;border-radius:13px;padding:13px}
+.stat{text-align:center;font-size:12px}
+.stat b{display:block;font-size:18px;color:#d9a9ff}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px}
+button{background:#303957;border:0;border-radius:9px;padding:11px;color:white;font-weight:bold;cursor:pointer}
+button.active,.primary{background:#914ee7}
+button:disabled{opacity:.4}
+section{display:none}
+section.active{display:block}
+.arena{text-align:center;background:radial-gradient(circle,#563c91,#171b35);padding:20px;border-radius:15px}
+.egg{font-size:85px;margin:12px}
+.bar{height:12px;background:#303957;border-radius:20px;overflow:hidden;margin:12px 0}
+.bar div{height:100%;background:linear-gradient(90deg,#a54bff,#ff74ed);transition:width .2s}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.card{background:#202741;padding:11px;border-radius:12px;border:1px solid #394466;min-width:0;overflow-wrap:anywhere}
+.card .emoji{font-size:37px;text-align:center;padding:8px}
+.card button{width:100%;margin-top:7px}
+.muted{color:#a9b4d1;font-size:12px}
+small{display:block;margin-top:4px}
+.Comum{color:#bbb}.Raro{color:#65d8ff}.Epico{color:#bd99ff}
+.Lendario{color:#ffad65}.Eternal{color:#ff8bd5}
+.Divine{color:#f5d66d}.Celestial{color:#8be9ff}
+.Cosmic{color:#d3a0ff}.Ancient{color:#e6c58b}
+.Secret{color:#ff7eb6}.Glitched{color:#a5ff73}
+.Omega{color:#ff795e}.Omniversal{color:#8bafff}
+.Creator{color:#fff18b}.Absolute{color:white}
+.TranscendentPlus{color:#ff65f5}
+#reward{display:none;position:fixed;inset:0;background:#080b1bed;z-index:10;align-items:center;justify-content:center;padding:20px;text-align:center}
+#reward.show{display:flex;animation:fade .25s}
+.rewardbox{background:linear-gradient(145deg,#482078,#151c40);border:2px solid #e68aff;border-radius:18px;padding:25px;width:100%;max-width:300px;box-shadow:0 0 35px #b84dff88;animation:pop .5s}
+.rewardemoji{font-size:80px;animation:bounce .7s infinite alternate}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.2)}to{transform:scale(1)}}
+@keyframes bounce{to{transform:translateY(-10px) scale(1.08)}}
+input{width:100%;padding:11px;border-radius:8px;border:0;margin-top:8px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>EGG FARM <span style="color:#ff83f0">TRANSCENDENT+</span></h1>
+<div class="muted">ULTIMATE MASSIVE SIMULATOR</div>
+</header>
+
+<div class="stats">
+<div class="stat">DINHEIRO<b id="money">S 500</b></div>
+<div class="stat">DANO<b id="damage">1</b></div>
+<div class="stat">PETS<b id="petCount">1/5</b></div>
+</div>
+
+<nav>
+<button class="active" data-page="farm">FARM</button>
+<button data-page="shop">OVOS</button>
+<button data-page="pets">PETS</button>
+<button data-page="index">ÍNDICE</button>
+</nav>
+
+<section id="farm" class="active">
+<div class="panel">
+<div class="arena">
+<div class="muted" id="eggName">Ovo Inicial</div>
+<div class="egg" id="eggEmoji">🥚</div>
+<b id="rarity">COMUM</b>
+<div id="hpText">100 / 100 HP</div>
+<div class="bar"><div id="hpBar"></div></div>
+<button class="primary" id="hit" style="width:100%">ATACAR OVO</button>
+<button id="auto" style="width:100%;margin-top:8px">AUTO: OFF</button>
+<p class="muted" id="message">Quebre ovos e ganhe pets!</p>
+<div id="equippedDisplay" style="font-size:29px;margin-top:12px">🧑‍🌾</div>
+<div class="muted">PETS EQUIPADOS</div>
+</div>
+<div class="row">
+<button id="previous">ANTERIOR</button>
+<button id="next">PRÓXIMO</button>
+</div>
+</div>
+
+<div class="panel" style="margin-top:12px">
+<h3>Melhorias</h3>
+<div class="row">Força <button id="upgrade">S 100</button></div>
+<div class="row">Dano x2 <button id="upgrade2">S 500</button></div>
+<div class="row">Dano x5 <button id="upgrade5">S 2.500</button></div>
+<div class="row">Dano x10 <button id="upgrade10">S 10.000</button></div>
+<div class="row">Espaço de pets <button id="buySlots">S 250</button></div>
+<div class="muted" id="slotInfo">5 espaços disponíveis</div>
+</div>
+</section>
+
+<section id="shop">
+<div class="panel">
+<h3>Loja de ovos</h3>
+<p class="muted" id="eggTotal"></p>
+<input id="eggSearch" placeholder="Pesquisar ovo...">
+</div>
+<div class="grid" id="shopList"></div>
+</section>
+
+<section id="pets">
+<div class="panel">
+<h3>Inventário de pets</h3>
+<p class="muted">Máximo de 3 pets equipados. Capacidade de até 35 pets.</p>
+<button id="equipBest" class="primary" style="width:100%">EQUIPAR MELHORES PETS</button>
+<button id="unequip" style="width:100%;margin-top:7px">DESEQUIPAR TODOS</button>
+<div id="petSlots" class="muted" style="margin-top:10px"></div>
+</div>
+<div class="grid" id="petList"></div>
+</section>
+
+<section id="index">
+<div class="panel">
+<h3>Índice de ovos</h3>
+<div id="progress">0/189 descobertos</div>
+<div class="bar"><div id="indexBar"></div></div>
+</div>
+<div class="grid" id="indexList"></div>
+</section>
+
+<div id="reward">
+<div class="rewardbox">
+<div style="color:#ff83f0;font-weight:bold">✦ NOVO PET! ✦</div>
+<div class="rewardemoji" id="rewardEmoji">🐉</div>
+<h2 id="rewardName">Pet</h2>
+<b id="rewardRarity"></b>
+<p id="rewardStats"></p>
+<button class="primary" id="closeReward" style="width:100%">CONTINUAR</button>
+</div>
+</div>
+
+<script>
+const names=[
+'Inicial','Grama','Floresta','Pedra','Areia','Gelo','Fogo','Água','Cristal','Ouro',
+'Magma','Oceano','Tóxico','Fantasma','Robô','Neon','Doce','Rubí','Safira','Esmeralda',
+'Diamante','Sombra','Tempestade','Dragão','Fênix','Anjo','Demônio','Rei','Titã','Galáxia',
+'Estelar','Lendário','Divino','Eterno','Infinito','Final',
+'Forest','Jungle','Lava','Ice','Storm','Thunder','Crystal','Ruby','Sapphire','Emerald',
+'Diamond','Golden','Shadow','Haunted','Candy','Chocolate','Rainbow','Magma','Ocean','Coral',
+'Toxic','Radioactive','Robot','Cyber','Neon','Pixel','Ancient','Fossil','Dinosaur','Dragon',
+'Phoenix','Angel','Demon','Mythical','Royal','King','Titan','Colossal','Meteor','Moon',
+'Sun','Solar','Final','Cosmic','Galaxy','Nebula','Void','Quantum','Eternal Star','Infinity',
+'Celestial','Dimension','Dark Matter','Supernova','Black Hole','Astral','Phantom','Divine Light',
+'Chaos','Time','Reality','Multiverse','Godly','Omega','Singularity','Hypernova','Universe',
+'Ancient God','Absolute','Omniverse','Creator','Eternity','Transcendent',
+'Prisma','Aurora','Tempestade Cósmica','Mundo Perdido','Estrela Negra','Coração Solar',
+'Núcleo Lunar','Dimensão Secreta','Portal Antigo','Vórtice','Cristal Eterno','Energia Pura',
+'Universo Sombrio','Relógio Infinito','Matéria Viva','Reino Celestial','Essência Divina',
+'Galáxia Perdida','Superdimensão','Núcleo Omega','Portal Glitch','Código Antigo',
+'Pixel Supremo','Erro Universal','Mundo Corrompido','Núcleo Quantum','Buraco Branco',
+'Estrela de Nêutrons','Constelação','Nebulosa Rosa','Cometa','Eclipse Total','Sol Negro',
+'Lua de Sangue','Raio Primordial','Mundo dos Deuses','Reino dos Titãs','Coração do Dragão',
+'Chama Eterna','Gelo Absoluto','Mar Infinito','Abismo Profundo','Jardim Divino','Templo Antigo',
+'Relíquia','Cristal Secreto','Núcleo Oculto','Dimensão X','Dimensão XX','Dimensão XXX',
+'Realidade Zero','Realidade Final','Universo Espelhado','Multiverso Oculto',
+'Omniverso Perdido','Portal do Criador','Essência Absoluta','Energia Omega','Fonte da Vida',
+'Origem','Fim dos Tempos','Além do Infinito','Reino Transcendente',
+'Coração Transcendente','Ovo Impossível','Ovo Supremo','Ovo Sem Fim','Ovo do Criador',
+'Ovo Absoluto','Ovo Omniversal','Ovo da Última Dimensão','Ovo da Origem',
+'Ovo do Vazio','Ovo da Eternidade','Ovo da Realidade','Ovo do Multiverso',
+'Ovo da Criação','Ovo do Destino','Ovo Final X'
+];
+
+const icons=['🥚','🌿','🌳','🪨','🏜️','🧊','🔥','🌊','💎','🪙','🌋','🐚','☢️','👻','🤖','💡','🍬','🔴','🔵','🟢','💠','🌑','⚡','🐉','🦅','😇','😈','👑','🗿','🌌','⭐','🌠','✨','♾️','🌍','🌈','🌀','☄️','🔮','🌟'];
+
+const rarityNames=[
+'Comum','Raro','Epico','Lendario','Eternal','Divine',
+'Celestial','Cosmic','Ancient','Secret','Glitched',
+'Omega','Omniversal','Creator','Absolute','TranscendentPlus'
+];
+
+const rarityEmoji=['🌟','🌌','🏺','👁️','👾','Ω','♾️','🔱','💎','💖'];
+
+const newPetNames=[
+['Serafim','Arcanjo','Guardião Solar','Cavaleiro Celeste','Luz Primordial','Querubim','Oráculo','Estrela Viva','Sentinela','Anjo da Aurora'],
+['Nebuloso','Cometa Azul','Devorador de Estrelas','Senhor da Galáxia','Núcleo Estelar','Astronauta Cósmico','Fera Nebular','Dragão Galáctico','Viajante Cósmico','Imperador das Estrelas'],
+['Faraó Antigo','Colosso Ancestral','Dragão Fóssil','Guardião das Eras','Rei Perdido','Titã de Pedra','Oráculo Ancião','Serpente Primordial','Gigante Antigo','Espírito Ancestral'],
+['Fantasma Secreto','Assassino Oculto','Gato Misterioso','Lobo Invisível','Sombra Viva','Agente X','Rei das Sombras','Vulto','Corvo Secreto','Entidade Oculta'],
+['Glitch Cat','Pixel Corrompido','Erro Vivo','Robô Bugado','Vírus Supremo','Falha Dimensional','Dragão Glitch','Fantasma de Código','Avatar Quebrado','Monstro Binário'],
+['Omega Dragon','Omega Phoenix','Omega Titan','Omega Beast','Omega King','Omega Angel','Omega Demon','Omega Serpent','Omega Golem','Omega Guardian'],
+['Senhor Omniversal','Dragão Omniversal','Rei dos Mundos','Devorador de Dimensões','Fênix Omniversal','Guardião do Tudo','Titã dos Universos','Entidade Infinita','Lobo Omniversal','Imperador Omniversal'],
+['Criador de Mundos','Arquiteto Cósmico','Mestre da Criação','Deus Construtor','Forjador de Estrelas','Criador de Vida','Arquiteto da Realidade','Mão Criadora','Fonte Original','Criador Supremo'],
+['Ser Absoluto','Rei Absoluto','Dragão Absoluto','Fênix Absoluta','Guardião Absoluto','Entidade Absoluta','Titã Absoluto','Luz Absoluta','Sombra Absoluta','Poder Absoluto'],
+['Transcendent King','Transcendent Dragon','Transcendent Phoenix','Transcendent Beast','Transcendent Angel','Transcendent Titan','Transcendent God','Transcendent Core','Transcendent Spirit','Transcendent Overlord']
+];
+
+const petsData=[
+['Noob','🧑‍🌾','Comum',1,1],
+['Dinossauro','🦖','Epico',1.4,3],
+['Raposa','🦊','Eternal',856,300],
+['Dragon','🐉','Divine',2500,1000],
+['Gato','🐱','Comum',5,5],
+['Coelho','🐰','Raro',18,12],
+['Lobo','🐺','Epico',60,30],
+['Fênix','🔥','Lendario',300,100],
+['Unicórnio','🦄','Eternal',1200,450],
+['Leviatã','🌊','Divine',5000,1800],
+['Abelha','🐝','Comum',8,7],
+['Tigre','🐯','Raro',35,20],
+['Golem','🗿','Lendario',450,160],
+['Cachorro','🐶','Comum',12,9],
+['Panda','🐼','Raro',45,25],
+['Macaco','🐵','Comum',15,10],
+['Polvo','🐙','Raro',75,40],
+['Tubarão','🦈','Epico',180,80],
+['Águia','🦅','Epico',220,100],
+['Cobra','🐍','Raro',90,45],
+['Urso','🐻','Epico',280,130],
+['Coruja','🦉','Raro',110,55],
+['Caranguejo','🦀','Comum',20,12],
+['Golfinho','🐬','Epico',350,150],
+['Baleia','🐳','Lendario',800,300],
+['Crocodilo','🐊','Epico',420,180],
+['Pinguim','🐧','Raro',130,65],
+['Flamingo','🦩','Lendario',900,350],
+['Dragão de Gelo','🐲','Eternal',1800,700],
+['Escorpião','🦂','Epico',500,200],
+['Morcego','🦇','Raro',150,70],
+['Carneiro','🐏','Comum',25,15],
+['Cavalo','🐴','Raro',170,85],
+['Porco','🐷','Comum',30,17],
+['Rato','🐭','Comum',35,20],
+['Pavão','🦚','Lendario',1100,420],
+['Camaleão','🦎','Epico',550,220],
+['Tartaruga','🐢','Raro',190,95],
+['Gorila','🦍','Epico',650,260],
+['Rena','🦌','Lendario',1300,500],
+['Abominável','👹','Eternal',2200,850],
+['Anjo','😇','Divine',6000,2200],
+['Demônio','👿','Divine',7500,2800],
+['Robô','🤖','Raro',240,120],
+['Alien','👽','Epico',800,320],
+['Fantasma','👻','Lendario',1500,600],
+['Zumbi','🧟','Epico',950,380],
+['Esqueleto','💀','Raro',280,140],
+['Múmia','🧟‍♂️','Lendario',1700,650],
+['Cavaleiro','⚔️','Eternal',2800,1000],
+['Rei','👑','Divine',9000,3500],
+['Imperador','🏛️','Divine',12000,4500],
+['Mago','🧙','Eternal',3200,1200],
+['Ninja','🥷','Lendario',1900,750],
+['Samurai','🗡️','Eternal',3800,1450],
+['Fada','🧚','Eternal',4200,1600],
+['Sereia','🧜','Lendario',2100,850],
+['Centauro','🐎','Eternal',4500,1700],
+['Titã','🗿','Divine',15000,6000],
+['Fera Cósmica','🌌','Divine',18000,7500],
+['Dragão Celestial','🐲','Divine',22000,9000],
+['Fênix Cósmica','☄️','Divine',26000,11000],
+['Guardião','🛡️','Lendario',2400,950],
+['Rei Dragão','🐉','Divine',30000,13000],
+['Deus do Ovo','🌟','Divine',50000,20000],
+['Gato Dourado','😺','Eternal',5000,1900],
+['Lobo das Sombras','🐺','Eternal',5500,2100],
+['Dragão de Plasma','⚡','Divine',35000,15000],
+['Fênix Suprema','🔥','Divine',40000,17000],
+['Anjo Supremo','👼','Divine',45000,19000],
+['Ovo Vivo','🥚','Divine',60000,25000]
+];
+
+const powers=[85000,140000,230000,380000,650000,1100000,1900000,3300000,5800000,12000000];
+const incomes=[32000,55000,90000,150000,260000,450000,800000,1400000,2500000,6000000];
+
+newPetNames.forEach((group,r)=>{
+group.forEach((name,j)=>{
+petsData.push([
+name,rarityEmoji[r],rarityNames[r+6],
+powers[r]*(1+j*.27),
+incomes[r]*(1+j*.25)
+]);
+});
+});
+
+const eggs=names.map((name,i)=>{
+let tier=i<4?0:i<9?1:i<17?2:i<27?3:i<36?4:i<55?5:i<79?6:i<99?7:i<119?8:i<139?9:i<159?10:i<169?11:i<179?12:i<185?13:i<188?14:15;
+return {
+name:name+' Egg',
+emoji:icons[i%icons.length],
+rarity:rarityNames[tier],
+hp:i===0?100:Math.round(100*Math.pow(i>=109?3.2:i>=79?2.7:2.15,i)),
+price:i===0?0:Math.round(50*Math.pow(i>=109?2.6:i>=79?2.15:1.85,i)),
+tier
+};
+});
+
+let money=500,damage=1,selected=0,hp=100,auto=false,uid=1;
+let slots=5,slotCost=250;
+let unlocked=new Set([0]),discovered=new Set();
+let inventory=[{uid:uid++,type:0,equipped:true}];
+
+const $=id=>document.getElementById(id);
+const fmt=n=>n>=1e15?(n/1e15).toFixed(1)+'Qa':n>=1e12?(n/1e12).toFixed(1)+'T':n>=1e9?(n/1e9).toFixed(1)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':Math.floor(n).toLocaleString('pt-BR');
+
+function equipped(){return inventory.filter(p=>p.equipped)}
+function totalDamage(){return damage+equipped().reduce((s,p)=>s+petsData[p.type][3],0)}
+function totalIncome(){return equipped().reduce((s,p)=>s+petsData[p.type][4],0)}
+
+function render(){
+$('money').textContent='S '+fmt(money);
+$('damage').textContent=fmt(totalDamage());
+$('petCount').textContent=inventory.length+'/'+slots;
+
+let e=eggs[selected];
+$('eggName').textContent=e.name;
+$('eggEmoji').textContent=e.emoji;
+$('rarity').textContent=e.rarity.toUpperCase();
+$('rarity').className=e.rarity;
+$('hpText').textContent=fmt(hp)+' / '+fmt(e.hp)+' HP';
+$('hpBar').style.width=Math.max(0,hp/e.hp*100)+'%';
+
+$('auto').textContent='AUTO: '+(auto?'ON':'OFF');
+$('upgrade').textContent='S '+fmt(100*Math.pow(2,damage-1));
+$('upgrade2').textContent='S '+fmt(500*damage);
+$('upgrade5').textContent='S '+fmt(2500*damage);
+$('upgrade10').textContent='S '+fmt(10000*damage);
+
+$('slotInfo').textContent=inventory.length+'/'+slots+' espaços ocupados';
+$('petSlots').textContent=inventory.length+'/'+slots+' espaços | '+equipped().length+'/3 equipados';
+$('buySlots').textContent=slots>=35?'LIMITE MÁXIMO':'COMPRAR +5 ESPAÇOS — S '+fmt(slotCost);
+$('buySlots').disabled=slots>=35;
+
+$('equippedDisplay').textContent=equipped().map(p=>petsData[p.type][1]).join(' ')||'Nenhum';
+
+let search=$('eggSearch').value.toLowerCase();
+
+$('shopList').innerHTML=eggs.map((e,i)=>({e,i}))
+.filter(x=>x.e.name.toLowerCase().includes(search))
+.map(({e,i})=>`
+<div class="card">
+<div class="emoji">${e.emoji}</div>
+<b>${e.name}</b>
+<small class="${e.rarity}">${e.rarity}</small>
+<small>HP ${fmt(e.hp)}</small>
+<small>Preço S ${fmt(e.price)}</small>
+<button data-buy="${i}">${unlocked.has(i)?'Selecionar':'Comprar'}</button>
+</div>`).join('');
+
+$('petList').innerHTML=inventory.map(p=>{
+let v=petsData[p.type];
+return `<div class="card">
+<div class="emoji">${v[1]}</div>
+<b>${v[0]}</b>
+<small class="${v[2]}">${v[2]}</small>
+<small>Dano: ${fmt(v[3])}</small>
+<small>Renda/s: ${fmt(v[4])}</small>
+<button data-equip="${p.uid}">${p.equipped?'Desequipar':'Equipar'}</button>
+<button data-sell="${p.uid}" ${p.type===0?'disabled':''}>Vender S ${fmt(v[3]*5)}</button>
+</div>`;
+}).join('');
+
+$('progress').textContent=discovered.size+'/'+eggs.length+' descobertos';
+$('indexBar').style.width=discovered.size/eggs.length*100+'%';
+
+$('indexList').innerHTML=eggs.map((e,i)=>`
+<div class="card">
+<b>${discovered.has(i)?e.emoji+' '+e.name:'🔒 Desconhecido'}</b>
+<small>${discovered.has(i)?e.rarity:'Não descoberto'}</small>
+</div>`).join('');
+}
+
+function rollPet(egg){
+let maxTier=Math.min(15,Math.floor(egg.tier*1.05));
+let allowed=rarityNames.slice(0,maxTier+1);
+let weights=[55,25,14,4.5,1.1,.35,.28,.2,.15,.12,.1,.08,.06,.04,.02,.01].slice(0,maxTier+1);
+let total=weights.reduce((a,b)=>a+b,0);
+let roll=Math.random()*total;
+
+for(let i=0;i<weights.length;i++){
+roll-=weights[i];
+if(roll<=0){
+let candidates=petsData.map((p,j)=>j).filter(j=>petsData[j][2]===allowed[i]);
+if(candidates.length)return candidates[Math.floor(Math.random()*candidates.length)];
+}
+}
+return 0;
+}
+
+function showReward(p){
+let v=petsData[p.type];
+$('rewardEmoji').textContent=v[1];
+$('rewardName').textContent=v[0];
+$('rewardRarity').textContent=v[2].toUpperCase();
+$('rewardStats').textContent='Dano: '+fmt(v[3])+' | Renda/s: '+fmt(v[4]);
+$('reward').classList.add('show');
+}
+
+$('closeReward').onclick=()=>$('reward').classList.remove('show');
+
+function attack(){
+hp-=totalDamage();
+
+if(hp<=0){
+let e=eggs[selected];
+discovered.add(selected);
+money+=Math.max(10,e.price*.55);
+
+if(inventory.length<slots){
+let p={uid:uid++,type:rollPet(e),equipped:false};
+inventory.push(p);
+showReward(p);
+$('message').textContent='Você ganhou '+petsData[p.type][0]+'!';
+}else{
+$('message').textContent='Inventário cheio! Compre espaços na aba PETS.';
+}
+hp=e.hp;
+}
+render();
+}
+
+$('hit').onclick=attack;
+$('auto').onclick=()=>{auto=!auto;render()};
+
+$('previous').onclick=()=>{
+selected=Math.max(0,selected-1);
+hp=eggs[selected].hp;
+render();
+};
+
+$('next').onclick=()=>{
+let n=[...unlocked].filter(x=>x>selected).sort((a,b)=>a-b)[0];
+if(n!==undefined){
+selected=n;
+hp=eggs[selected].hp;
+render();
+}else{
+$('message').textContent='Compre o próximo ovo na loja!';
+}
+};
+
+$('upgrade').onclick=()=>{
+let cost=100*Math.pow(2,damage-1);
+if(money>=cost){money-=cost;damage++;render();}
+else $('message').textContent='Dinheiro insuficiente!';
+};
+
+function buyDamage(mult,cost){
+if(money<cost)return;
+money-=cost;
+damage+=mult;
+render();
+}
+
+$('upgrade2').onclick=()=>buyDamage(2,500*damage);
+$('upgrade5').onclick=()=>buyDamage(5,2500*damage);
+$('upgrade10').onclick=()=>buyDamage(10,10000*damage);
+
+$('buySlots').onclick=()=>{
+if(slots>=35||money<slotCost)return;
+money-=slotCost;
+slots=Math.min(35,slots+5);
+slotCost*=2;
+render();
+};
+
+$('equipBest').onclick=()=>{
+inventory.forEach(p=>p.equipped=false);
+[...inventory].sort((a,b)=>petsData[b.type][3]-petsData[a.type][3])
+.slice(0,3).forEach(p=>p.equipped=true);
+render();
+};
+
+$('unequip').onclick=()=>{
+inventory.forEach(p=>p.equipped=false);
+render();
+};
+
+$('shopList').onclick=e=>{
+let b=e.target.closest('[data-buy]');
+if(!b)return;
+let i=+b.dataset.buy;
+
+if(unlocked.has(i)){
+selected=i;
+hp=eggs[i].hp;
+}else if(money>=eggs[i].price){
+money-=eggs[i].price;
+unlocked.add(i);
+selected=i;
+hp=eggs[i].hp;
+}else return;
+
+render();
+};
+
+$('petList').onclick=e=>{
+let b=e.target.closest('button');
+if(!b)return;
+
+let p=inventory.find(x=>x.uid===+(b.dataset.equip||b.dataset.sell));
+if(!p)return;
+
+if(b.dataset.equip!==undefined){
+if(p.equipped)p.equipped=false;
+else if(equipped().length<3)p.equipped=true;
+else $('message').textContent='Limite de 3 pets equipados!';
+}else if(b.dataset.sell!==undefined&&p.type!==0){
+money+=petsData[p.type][3]*5;
+inventory=inventory.filter(x=>x!==p);
+}
+render();
+};
+
+$('eggSearch').oninput=render;
+
+document.querySelectorAll('nav button').forEach(b=>{
+b.onclick=()=>{
+document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+document.querySelectorAll('section').forEach(s=>s.classList.toggle('active',s.id===b.dataset.page));
+};
+});
+
+$('eggTotal').textContent=eggs.length+' ovos disponíveis.';
+
+setInterval(()=>{
+money+=totalIncome();
+if(auto)attack();
+else{
+let d=totalDamage()-damage;
+if(d>0){
+hp-=d;
+if(hp<=0)attack();
+else render();
+}else render();
+}
+},1000);
+
+render();
+</script>
+</body>
+  </html>
